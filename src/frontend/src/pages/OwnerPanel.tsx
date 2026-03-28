@@ -11,9 +11,11 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  ArrowLeft,
   BarChart3,
   Building2,
   Crown,
+  Home,
   LogOut,
   MessageSquare,
   Settings,
@@ -182,6 +184,21 @@ export default function OwnerPanel() {
             <Badge className="bg-purple-600/30 text-purple-200 border-purple-400/30">
               Platform Owner
             </Badge>
+            {/* Back to Home */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                logout();
+                toast.success("Welcome back to Food Haveli!");
+              }}
+              className="border-amber-500/40 text-amber-300 hover:bg-amber-500/10 hover:text-amber-200 hover:border-amber-400/60 transition-all gap-1.5"
+              data-ocid="owner.back_home.button"
+            >
+              <ArrowLeft size={15} />
+              <Home size={14} />
+              <span className="hidden sm:inline">Back to Home</span>
+            </Button>
             <Button
               variant="ghost"
               size="sm"

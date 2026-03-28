@@ -11,9 +11,11 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  ArrowLeft,
   BarChart3,
   CheckCircle,
   ChefHat,
+  Home,
   LogOut,
   QrCode,
   Settings,
@@ -70,6 +72,21 @@ export default function RestaurantPanel() {
             <Badge className="bg-amber-600/30 text-amber-200 border-amber-400/30">
               Restaurant Manager
             </Badge>
+            {/* Back to Home */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                logout();
+                toast.success("Welcome back to Food Haveli!");
+              }}
+              className="border-amber-500/40 text-amber-300 hover:bg-amber-500/10 hover:text-amber-200 hover:border-amber-400/60 transition-all gap-1.5"
+              data-ocid="restaurant.back_home.button"
+            >
+              <ArrowLeft size={15} />
+              <Home size={14} />
+              <span className="hidden sm:inline">Back to Home</span>
+            </Button>
             <Button
               variant="ghost"
               size="sm"
