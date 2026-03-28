@@ -35,10 +35,13 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import { AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { Page } from "../App";
+import RazorpayModal from "../components/RazorpayModal";
 import { useCMS } from "../context/CMSContext";
+import type { PricingPlan } from "../context/CMSContext";
 
 interface LandingPageProps {
   onNavigate: (page: Page) => void;
@@ -389,6 +392,8 @@ const FAQS = [
 export default function LandingPage({ onNavigate }: LandingPageProps) {
   const { pricingPlans } = useCMS();
   const [demoScreen, setDemoScreen] = useState(0);
+  const [selectedPlan, setSelectedPlan] = useState<PricingPlan | null>(null);
+  const [showRazorpay, setShowRazorpay] = useState(false);
   const [contactForm, setContactForm] = useState({
     fullName: "",
     company: "",
@@ -402,6 +407,18 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
     }, 3000);
     return () => clearInterval(timer);
   }, []);
+
+  function handlePlanSelect(plan: PricingPlan) {
+    if (plan.price === "Free") {
+      toast.success("Starter plan activated! You're all set 🎉", {
+        position: "top-right",
+      });
+      setTimeout(() => onNavigate("cms"), 800);
+      return;
+    }
+    setSelectedPlan(plan);
+    setShowRazorpay(true);
+  }
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -1156,6 +1173,7 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
                 <button
                   type="button"
                   data-ocid="pricing.primary_button"
+                  onClick={() => handlePlanSelect(plan)}
                   className={
                     plan.highlighted
                       ? "w-full py-3 rounded-xl bg-gold hover:bg-gold/90 text-black text-sm font-bold transition-all hover:scale-105"
@@ -1804,6 +1822,25 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
           </div>
         </div>
       </footer>
+      {/* Razorpay Payment Modal */}
+      <AnimatePresence>
+        {showRazorpay && selectedPlan && (
+          <RazorpayModal
+            plan={selectedPlan}
+            onClose={() => {
+              setShowRazorpay(false);
+              setSelectedPlan(null);
+            }}
+            onSuccess={(orderId) => {
+              setShowRazorpay(false);
+              toast.success(`Payment successful! Order ID: ${orderId}`, {
+                position: "top-right",
+              });
+              setTimeout(() => onNavigate("dashboard"), 800);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
