@@ -59,7 +59,7 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
 
 const CATEGORIES = ["Mains", "Breads", "Drinks", "Desserts", "Snacks"];
 
-const STATUS_COLORS: Record<string, string> = {
+const _STATUS_COLORS: Record<string, string> = {
   pending: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
   preparing: "bg-orange-500/15 text-orange-400 border-orange-500/30",
   ready: "bg-green-500/15 text-green-400 border-green-500/30",
@@ -189,6 +189,439 @@ function MenuManagerTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
     {},
   );
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [showQR, setShowQR] = useState(false);
+
+  const generateAIMenu = async () => {
+    if (!aiPrompt.trim()) return;
+    setAiGenerating(true);
+    const lower = aiPrompt.toLowerCase();
+    let items: Omit<import("../context/CMSContext").MenuItem, "id">[] = [];
+    if (
+      lower.includes("north indian") ||
+      lower.includes("punjabi") ||
+      lower.includes("dhaba")
+    ) {
+      items = [
+        {
+          name: "Paneer Tikka",
+          category: "Starters",
+          price: 220,
+          desc: "Grilled cottage cheese marinated in yogurt and spices, served with mint chutney",
+          image:
+            "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=400",
+          popular: true,
+          available: true,
+          rating: 4.8,
+        },
+        {
+          name: "Dal Makhani",
+          category: "Mains",
+          price: 180,
+          desc: "Slow-cooked black lentils with butter and cream, simmered overnight for rich flavor",
+          image:
+            "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400",
+          popular: true,
+          available: true,
+          rating: 4.9,
+        },
+        {
+          name: "Chole Bhature",
+          category: "Mains",
+          price: 150,
+          desc: "Spiced chickpea curry served with fluffy deep-fried bread",
+          image:
+            "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400",
+          popular: true,
+          available: true,
+          rating: 4.7,
+        },
+        {
+          name: "Palak Paneer",
+          category: "Mains",
+          price: 200,
+          desc: "Fresh cottage cheese in creamy spinach gravy with aromatic spices",
+          image:
+            "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400",
+          popular: false,
+          available: true,
+          rating: 4.6,
+        },
+        {
+          name: "Butter Naan",
+          category: "Breads",
+          price: 60,
+          desc: "Soft leavened bread baked in tandoor, brushed with butter",
+          image:
+            "https://images.unsplash.com/photo-1555126634-323283e090fa?w=400",
+          popular: true,
+          available: true,
+          rating: 4.8,
+        },
+        {
+          name: "Matar Kulcha",
+          category: "Breads",
+          price: 80,
+          desc: "Fluffy kulcha stuffed with spiced peas, served with chole",
+          image:
+            "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400",
+          popular: false,
+          available: true,
+          rating: 4.5,
+        },
+        {
+          name: "Mango Lassi",
+          category: "Drinks",
+          price: 120,
+          desc: "Creamy yogurt drink blended with fresh Alphonso mango pulp",
+          image:
+            "https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=400",
+          popular: true,
+          available: true,
+          rating: 4.9,
+        },
+        {
+          name: "Gulab Jamun",
+          category: "Desserts",
+          price: 100,
+          desc: "Soft milk-solid dumplings soaked in rose-flavored sugar syrup",
+          image:
+            "https://images.unsplash.com/photo-1601303516534-bf4177b60e74?w=400",
+          popular: true,
+          available: true,
+          rating: 4.8,
+        },
+      ];
+    } else if (
+      lower.includes("south indian") ||
+      lower.includes("dosa") ||
+      lower.includes("idli")
+    ) {
+      items = [
+        {
+          name: "Masala Dosa",
+          category: "Mains",
+          price: 140,
+          desc: "Crispy rice crepe filled with spiced potato filling, served with sambhar and chutneys",
+          image:
+            "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400",
+          popular: true,
+          available: true,
+          rating: 4.9,
+        },
+        {
+          name: "Idli Sambhar",
+          category: "Starters",
+          price: 100,
+          desc: "Steamed rice cakes served with lentil-vegetable soup and coconut chutney",
+          image:
+            "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400",
+          popular: true,
+          available: true,
+          rating: 4.8,
+        },
+        {
+          name: "Medu Vada",
+          category: "Starters",
+          price: 90,
+          desc: "Crispy lentil fritters with a soft interior, served with sambhar and chutney",
+          image:
+            "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400",
+          popular: false,
+          available: true,
+          rating: 4.6,
+        },
+        {
+          name: "Rava Dosa",
+          category: "Mains",
+          price: 130,
+          desc: "Crispy semolina dosa with onions and green chillies",
+          image:
+            "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400",
+          popular: false,
+          available: true,
+          rating: 4.7,
+        },
+        {
+          name: "Uttapam",
+          category: "Mains",
+          price: 120,
+          desc: "Thick rice pancake topped with onions, tomatoes, and chillies",
+          image:
+            "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400",
+          popular: false,
+          available: true,
+          rating: 4.5,
+        },
+        {
+          name: "Filter Coffee",
+          category: "Drinks",
+          price: 60,
+          desc: "Strong South Indian decoction coffee with frothed milk",
+          image:
+            "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400",
+          popular: true,
+          available: true,
+          rating: 4.9,
+        },
+      ];
+    } else if (
+      lower.includes("chinese") ||
+      lower.includes("indo-chinese") ||
+      lower.includes("noodles")
+    ) {
+      items = [
+        {
+          name: "Hakka Noodles",
+          category: "Mains",
+          price: 160,
+          desc: "Stir-fried noodles with vegetables in Indo-Chinese sauce",
+          image:
+            "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400",
+          popular: true,
+          available: true,
+          rating: 4.7,
+        },
+        {
+          name: "Veg Fried Rice",
+          category: "Mains",
+          price: 150,
+          desc: "Wok-tossed rice with vegetables, soy sauce, and spring onions",
+          image:
+            "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400",
+          popular: true,
+          available: true,
+          rating: 4.6,
+        },
+        {
+          name: "Veg Manchurian",
+          category: "Starters",
+          price: 180,
+          desc: "Crispy vegetable balls in tangy Manchurian gravy",
+          image:
+            "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400",
+          popular: true,
+          available: true,
+          rating: 4.8,
+        },
+        {
+          name: "Spring Rolls",
+          category: "Starters",
+          price: 140,
+          desc: "Crispy rolls filled with vegetables and glass noodles",
+          image:
+            "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400",
+          popular: false,
+          available: true,
+          rating: 4.5,
+        },
+        {
+          name: "Manchow Soup",
+          category: "Starters",
+          price: 120,
+          desc: "Hot and sour soup with crispy noodles on top",
+          image:
+            "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400",
+          popular: false,
+          available: true,
+          rating: 4.4,
+        },
+        {
+          name: "Chilli Paneer",
+          category: "Starters",
+          price: 200,
+          desc: "Cottage cheese tossed in spicy chilli sauce with peppers",
+          image:
+            "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=400",
+          popular: true,
+          available: true,
+          rating: 4.8,
+        },
+      ];
+    } else if (lower.includes("pizza") || lower.includes("italian")) {
+      items = [
+        {
+          name: "Margherita Pizza",
+          category: "Mains",
+          price: 280,
+          desc: "Classic tomato sauce with fresh mozzarella and basil on hand-tossed crust",
+          image:
+            "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400",
+          popular: true,
+          available: true,
+          rating: 4.8,
+        },
+        {
+          name: "Pasta Arrabiata",
+          category: "Mains",
+          price: 240,
+          desc: "Penne pasta in spicy tomato sauce with garlic and herbs",
+          image:
+            "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=400",
+          popular: false,
+          available: true,
+          rating: 4.6,
+        },
+        {
+          name: "Garlic Bread",
+          category: "Starters",
+          price: 120,
+          desc: "Toasted baguette with herb butter and garlic, served warm",
+          image:
+            "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?w=400",
+          popular: true,
+          available: true,
+          rating: 4.7,
+        },
+        {
+          name: "Tiramisu",
+          category: "Desserts",
+          price: 200,
+          desc: "Classic Italian dessert with mascarpone, espresso, and ladyfingers",
+          image:
+            "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400",
+          popular: true,
+          available: true,
+          rating: 4.9,
+        },
+      ];
+    } else if (lower.includes("burger") || lower.includes("fast food")) {
+      items = [
+        {
+          name: "Classic Veg Burger",
+          category: "Mains",
+          price: 160,
+          desc: "Crispy patty with lettuce, tomato, onion and special sauce in a toasted bun",
+          image:
+            "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400",
+          popular: true,
+          available: true,
+          rating: 4.7,
+        },
+        {
+          name: "Paneer Burger",
+          category: "Mains",
+          price: 190,
+          desc: "Grilled paneer patty with jalapeños, cheese and mint mayo",
+          image:
+            "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400",
+          popular: true,
+          available: true,
+          rating: 4.8,
+        },
+        {
+          name: "Loaded Fries",
+          category: "Starters",
+          price: 140,
+          desc: "Crispy fries topped with cheese sauce, jalapeños and spring onions",
+          image:
+            "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400",
+          popular: true,
+          available: true,
+          rating: 4.6,
+        },
+        {
+          name: "Chocolate Milkshake",
+          category: "Drinks",
+          price: 180,
+          desc: "Thick creamy milkshake blended with premium dark chocolate",
+          image:
+            "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400",
+          popular: false,
+          available: true,
+          rating: 4.7,
+        },
+        {
+          name: "Onion Rings",
+          category: "Starters",
+          price: 110,
+          desc: "Golden crispy battered onion rings served with dipping sauce",
+          image:
+            "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400",
+          popular: false,
+          available: true,
+          rating: 4.4,
+        },
+      ];
+    } else {
+      items = [
+        {
+          name: "Dal Tadka",
+          category: "Mains",
+          price: 140,
+          desc: "Yellow lentils tempered with ghee, cumin, and fresh garlic",
+          image:
+            "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400",
+          popular: true,
+          available: true,
+          rating: 4.7,
+        },
+        {
+          name: "Steamed Rice",
+          category: "Mains",
+          price: 80,
+          desc: "Fluffy long-grain basmati rice, perfectly cooked",
+          image:
+            "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400",
+          popular: false,
+          available: true,
+          rating: 4.5,
+        },
+        {
+          name: "Mixed Sabzi",
+          category: "Mains",
+          price: 160,
+          desc: "Seasonal vegetables cooked with onion, tomato, and spices",
+          image:
+            "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=400",
+          popular: false,
+          available: true,
+          rating: 4.6,
+        },
+        {
+          name: "Phulka Roti",
+          category: "Breads",
+          price: 30,
+          desc: "Soft whole wheat flatbread cooked on open flame",
+          image:
+            "https://images.unsplash.com/photo-1555126634-323283e090fa?w=400",
+          popular: true,
+          available: true,
+          rating: 4.8,
+        },
+        {
+          name: "Masala Chai",
+          category: "Drinks",
+          price: 40,
+          desc: "Spiced Indian tea brewed with ginger, cardamom, and milk",
+          image:
+            "https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=400",
+          popular: true,
+          available: true,
+          rating: 4.9,
+        },
+        {
+          name: "Fresh Salad",
+          category: "Starters",
+          price: 90,
+          desc: "Crisp cucumber, tomato, onion with lemon and chaat masala",
+          image:
+            "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400",
+          popular: false,
+          available: true,
+          rating: 4.5,
+        },
+      ];
+    }
+    await new Promise((r) => setTimeout(r, 1500));
+    for (const item of items) {
+      cms.addMenuItem(item);
+    }
+    setAiGenerating(false);
+    setAiPrompt("");
+    toast.success(`✅ ${items.length} menu items generated successfully!`);
+  };
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -268,6 +701,123 @@ function MenuManagerTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
         >
           <PlusCircle className="w-4 h-4" /> Add Item
         </Button>
+      </div>
+
+      {/* AI Menu Generator */}
+      <div
+        className="rounded-2xl border border-purple-500/30 bg-card/50 backdrop-blur p-5 space-y-3"
+        style={{
+          background:
+            "linear-gradient(135deg, oklch(0.18 0.06 280 / 0.4), oklch(0.16 0.04 240 / 0.4))",
+        }}
+      >
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-xl">🤖</span>
+          <div>
+            <h3 className="font-bold text-foreground text-sm">
+              AI Menu Generator
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              Describe your restaurant and AI will generate a full menu
+              instantly
+            </p>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <Input
+            data-ocid="cms.menu.input"
+            value={aiPrompt}
+            onChange={(e) => setAiPrompt(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && generateAIMenu()}
+            placeholder='e.g. "North Indian restaurant with curries and breads"'
+            className="flex-1 bg-background/60"
+            disabled={aiGenerating}
+          />
+          <Button
+            data-ocid="cms.menu.primary_button"
+            onClick={generateAIMenu}
+            disabled={aiGenerating || !aiPrompt.trim()}
+            className="shrink-0 text-white font-semibold"
+            style={{
+              background:
+                "linear-gradient(135deg, oklch(0.45 0.18 280), oklch(0.5 0.2 300))",
+            }}
+          >
+            {aiGenerating ? (
+              <span className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                Generating...
+              </span>
+            ) : (
+              "✨ Generate"
+            )}
+          </Button>
+        </div>
+      </div>
+
+      {/* QR Code Section */}
+      <div
+        className="rounded-2xl border border-gold/20 bg-card/50 backdrop-blur p-5"
+        style={{
+          background:
+            "linear-gradient(135deg, oklch(0.18 0.04 85 / 0.3), oklch(0.16 0.04 240 / 0.3))",
+        }}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">📱</span>
+            <div>
+              <h3 className="font-bold text-foreground text-sm">
+                Restaurant QR Code
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Scan to open your menu instantly — no app needed
+              </p>
+            </div>
+          </div>
+          <Button
+            data-ocid="cms.menu.toggle"
+            variant="outline"
+            size="sm"
+            onClick={() => setShowQR(!showQR)}
+            className="text-xs border-gold/40 text-gold hover:bg-gold/10"
+          >
+            {showQR ? "Hide QR" : "Show QR"}
+          </Button>
+        </div>
+        {showQR && (
+          <div className="mt-4 flex flex-col sm:flex-row items-center gap-4">
+            <div className="rounded-xl overflow-hidden border-2 border-gold/30 bg-white p-2 shadow-lg">
+              <img
+                src="https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=https%3A%2F%2Ffoodhaveli.app%2Fmenu&choe=UTF-8"
+                alt="Restaurant Menu QR Code"
+                className="w-[160px] h-[160px]"
+              />
+            </div>
+            <div className="space-y-2 text-center sm:text-left">
+              <p className="text-sm font-semibold text-foreground">
+                Your Menu QR Code
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Print this and place it on tables, counter, or packaging
+              </p>
+              <a
+                data-ocid="cms.menu.button"
+                href="https://chart.googleapis.com/chart?cht=qr&chs=400x400&chl=https%3A%2F%2Ffoodhaveli.app%2Fmenu&choe=UTF-8"
+                download="food-haveli-qr.png"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-black transition-all hover:opacity-90"
+                style={{
+                  background:
+                    "linear-gradient(135deg, oklch(0.78 0.19 85), oklch(0.7 0.18 60))",
+                }}
+              >
+                ⬇️ Download QR Code
+              </a>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Inline Form */}
@@ -1000,8 +1550,8 @@ function OrdersTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
     filter === "all"
       ? cms.orders
       : cms.orders.filter((o) => o.status === filter);
-  const totalRevenue = cms.orders.reduce((sum, o) => sum + o.amount, 0);
-  const activeRevenue = cms.orders
+  const _totalRevenue = cms.orders.reduce((sum, o) => sum + o.amount, 0);
+  const _activeRevenue = cms.orders
     .filter((o) => o.status !== "delivered")
     .reduce((sum, o) => sum + o.amount, 0);
 
@@ -1026,7 +1576,7 @@ function OrdersTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
           },
           {
             label: "Total Revenue",
-            value: `₹${totalRevenue.toLocaleString()}`,
+            value: "₹$totalRevenue.toLocaleString()",
             color: "text-gold",
           },
           {
@@ -1036,7 +1586,7 @@ function OrdersTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
           },
           {
             label: "Active Revenue",
-            value: `₹${activeRevenue.toLocaleString()}`,
+            value: "₹$activeRevenue.toLocaleString()",
             color: "text-green-400",
           },
         ].map((stat) => (
@@ -1045,7 +1595,7 @@ function OrdersTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
             className="rounded-xl border border-border bg-card/50 p-4"
           >
             <p className="text-xs text-muted-foreground">{stat.label}</p>
-            <p className={`text-xl font-black mt-1 ${stat.color}`}>
+            <p className={"text-xl font-black mt-1 $stat.color"}>
               {stat.value}
             </p>
           </div>
@@ -1061,11 +1611,10 @@ function OrdersTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
               type="button"
               data-ocid="cms.orders.tab"
               onClick={() => setFilter(s)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium capitalize transition-all ${
+              className={`px-3 py-1.5 rounded-full text-xs font-medium capitalize transition-all $
                 filter === s
                   ? "bg-gold text-black"
-                  : "bg-card border border-border text-muted-foreground hover:text-foreground"
-              }`}
+                  : "bg-card border border-border text-muted-foreground hover:text-foreground"`}
             >
               {s === "all" ? `All (${cms.orders.length})` : s}
             </button>
@@ -1110,10 +1659,10 @@ function OrdersTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
                 </td>
               </tr>
             ) : (
-              filtered.map((order, i) => (
+              filtered.map((order, _i) => (
                 <tr
                   key={order.id}
-                  data-ocid={`cms.orders.row.${i + 1}`}
+                  data-ocid={"cms.orders.row.$i + 1"}
                   className="border-b border-border/50 hover:bg-white/3 transition-colors"
                 >
                   <td className="p-3 font-mono text-xs text-muted-foreground">
@@ -1135,16 +1684,16 @@ function OrdersTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
                   </td>
                   <td className="p-3 text-center">
                     <select
-                      data-ocid={`cms.orders.select.${i + 1}`}
+                      data-ocid={"cms.orders.select.$i + 1"}
                       value={order.status}
                       onChange={(e) => {
                         cms.updateOrderStatus(
                           order.id,
                           e.target.value as Order["status"],
                         );
-                        toast.success(`Order ${order.id} → ${e.target.value}`);
+                        toast.success("Order $order.id→ $e.target.value");
                       }}
-                      className={`text-xs px-2 py-1 rounded-full border font-medium bg-transparent cursor-pointer ${STATUS_COLORS[order.status] ?? ""}`}
+                      className={`text-xs px-2 py-1 rounded-full border font-medium bg-transparent cursor-pointer $STATUS_COLORS[order.status] ?? ""`}
                     >
                       {(
                         ["pending", "preparing", "ready", "delivered"] as const
@@ -1438,10 +1987,10 @@ function VendorManagerTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
                 </td>
               </tr>
             ) : (
-              cms.vendors.map((vendor, i) => (
+              cms.vendors.map((vendor, _i) => (
                 <tr
                   key={vendor.id}
-                  data-ocid={`cms.vendors.row.${i + 1}`}
+                  data-ocid={"cms.vendors.row.$i + 1"}
                   className="border-b border-border/50 hover:bg-white/3 transition-colors"
                 >
                   <td className="p-3">
@@ -1463,7 +2012,7 @@ function VendorManagerTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
                   </td>
                   <td className="p-3 text-center">
                     <select
-                      data-ocid={`cms.vendors.select.${i + 1}`}
+                      data-ocid={"cms.vendors.select.$i + 1"}
                       value={vendor.status}
                       onChange={(e) => {
                         cms.updateVendor(vendor.id, {
@@ -1471,7 +2020,7 @@ function VendorManagerTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
                         });
                         toast.success("Status updated!");
                       }}
-                      className={`text-xs px-2 py-1 rounded-full border font-medium bg-transparent cursor-pointer capitalize ${STATUS_COLORS[vendor.status] ?? ""}`}
+                      className={`text-xs px-2 py-1 rounded-full border font-medium bg-transparent cursor-pointer capitalize $STATUS_COLORS[vendor.status] ?? ""`}
                     >
                       <option
                         value="active"
@@ -1497,7 +2046,7 @@ function VendorManagerTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
                     <div className="flex items-center justify-center gap-2">
                       <button
                         type="button"
-                        data-ocid={`cms.vendors.edit_button.${i + 1}`}
+                        data-ocid={"cms.vendors.edit_button.$i + 1"}
                         onClick={() => startEdit(vendor)}
                         className="p-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-400"
                       >
@@ -1507,7 +2056,7 @@ function VendorManagerTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
                         <>
                           <button
                             type="button"
-                            data-ocid={`cms.vendors.confirm_button.${i + 1}`}
+                            data-ocid={"cms.vendors.confirm_button.$i + 1"}
                             onClick={() => {
                               cms.deleteVendor(vendor.id);
                               toast.success("Vendor removed");
@@ -1519,7 +2068,7 @@ function VendorManagerTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
                           </button>
                           <button
                             type="button"
-                            data-ocid={`cms.vendors.cancel_button.${i + 1}`}
+                            data-ocid={"cms.vendors.cancel_button.$i + 1"}
                             onClick={() => setDeleteConfirm(null)}
                             className="px-2 py-1 rounded-lg bg-white/10 text-muted-foreground text-xs font-medium"
                           >
@@ -1529,7 +2078,7 @@ function VendorManagerTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
                       ) : (
                         <button
                           type="button"
-                          data-ocid={`cms.vendors.delete_button.${i + 1}`}
+                          data-ocid={"cms.vendors.delete_button.$i + 1"}
                           onClick={() => setDeleteConfirm(vendor.id)}
                           className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400"
                         >

@@ -1,38 +1,33 @@
-# Food Haveli — JARVIS AI Chatbot
+# Food Haveli — AI Upgrade + Feature Integration
 
 ## Current State
-The existing chatbot is a rule-based assistant with basic Hindi/English language toggle and preset quick-reply buttons. It does not auto-detect language, does not have true conversational AI, and voice output is not functional on tap/click.
+- Haveli AI chatbot exists (AIChatbot.tsx, 1073 lines) with rule-based responses, language detection, EN/HI toggle buttons, voice input/output, bad word filter
+- CMS Panel has menu management (manual add/edit) but NO actual AI menu generation that creates items
+- NO QR code generation in CMS — QR scanner exists but only for scanning
+- WhatsApp alert is described in landing page flow but NOT triggered on order placement
+- Analytics Dashboard exists in Dashboard.tsx but needs verification
+- Language selector is EN/HI text buttons inside the chat
 
 ## Requested Changes (Diff)
 
 ### Add
-- JARVIS identity: rename chatbot to JARVIS with futuristic UI branding
-- Auto language detection: detect if user typed Hindi/English/Hinglish and respond accordingly
-- Intelligent multi-topic response engine: general knowledge, technical support, education, business advice, coding help, Food Haveli guidance, productivity, career, troubleshooting
-- Voice OUTPUT: when user taps a speak/play button on any JARVIS response, it reads it aloud using Web Speech API SpeechSynthesis (Hindi voice for Hindi text, English voice for English text)
-- Voice INPUT: microphone button uses Web Speech API SpeechRecognition, auto-detects language, sends recognized text to chat
-- Hinglish support: detect mixed language and respond naturally in Hinglish
-- Greeting on open: "Hello! I'm JARVIS, your AI assistant. How can I help you today?" or Hindi equivalent based on browser language
-- Smart Food Haveli context: JARVIS knows everything about Food Haveli (features, pricing, how to use, owner journey, customer journey, etc.)
-- Step-by-step problem solving responses for complex queries
-- Follow-up question prompts for ambiguous queries
+- AI Menu Generator in CMS: button to describe restaurant type → auto-populate menu items (mock AI, generates realistic North Indian / South Indian / Chinese / etc menus)
+- QR Code Generator in CMS: generates a downloadable QR code image for the restaurant menu URL using a QR library or Google Charts API
+- WhatsApp Alert: when customer places order in CustomerOrderPage, open WhatsApp with pre-filled order message to owner's number
+- Language selector as a clear toggle (dropdown or pill switcher) at the top of the chat window — not just inside toolbar
+- Enhanced Haveli AI: much larger knowledge base, conversational memory (last 5 messages for context), human-like natural responses for general topics (tech, coding, business, education, general knowledge), responses formatted with bullet points/line breaks for readability
 
 ### Modify
-- Replace existing chatbot component entirely with new JARVIS chatbot
-- Floating button: JARVIS branding, futuristic glow effect
-- Chat window: dark glassmorphism style, JARVIS header with animated pulse indicator
-- Messages: each JARVIS response has a small speaker icon to trigger TTS playback
-- Language: remove manual EN/HI toggle — now fully automatic via detection
+- AIChatbot.tsx: upgrade response engine to handle general knowledge questions more naturally (cooking tips, business advice, coding help, general Q&A) alongside Food Haveli specific queries. Add context from last 3-5 messages. Make language selector more visible at top of chat.
+- CMSPanel.tsx: add AI Menu Generator tab action and QR Code section under menu tab
+- CustomerOrderPage.tsx: after order confirmation, trigger WhatsApp link to owner with order details
 
 ### Remove
-- Manual language toggle buttons (EN/HI)
-- Old rule-based limited responses
+- Nothing removed
 
 ## Implementation Plan
-1. Build a comprehensive JARVIS response engine in TypeScript covering all topic categories with Hindi/English/Hinglish variants
-2. Implement auto language detection (check for Devanagari Unicode range for Hindi, mixed = Hinglish)
-3. Integrate Web Speech API SpeechRecognition for voice input with language auto-detect
-4. Integrate Web Speech API SpeechSynthesis for voice output — speaker icon on each bot message
-5. JARVIS Food Haveli knowledge base: embed all key facts about features, pricing, owner/customer journeys
-6. Redesign chatbot UI: JARVIS branding, futuristic dark theme, animated typing indicator, smooth message transitions
-7. Greeting logic: show welcome message when chat opens
+1. Upgrade AIChatbot.tsx: expand knowledge base for general topics, add conversational context (last 5 messages passed to response function), make language selector prominent at chat header, improve response naturalness
+2. Add AI Menu Generator to CMSPanel.tsx: button in Menu Manager tab, prompt input, generate realistic menu items based on cuisine type
+3. Add QR Code Generator to CMSPanel.tsx: generate QR using Google Charts API (https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl=URL), show preview, download button
+4. Add WhatsApp alert to CustomerOrderPage.tsx: after order placed, create WhatsApp link with formatted order details and open it
+5. Verify Dashboard.tsx analytics show correctly

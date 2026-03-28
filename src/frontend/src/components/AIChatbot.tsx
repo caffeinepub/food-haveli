@@ -529,6 +529,9 @@ export default function AIChatbot() {
   const [speakingId, setSpeakingId] = useState<number | null>(null);
   const [greetingDone, setGreetingDone] = useState(false);
   const [lastDetectedLang, setLastDetectedLang] = useState<Lang>("english");
+  const [forcedLang, setForcedLang] = useState<"english" | "hindi" | null>(
+    null,
+  );
   const scrollRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const idRef = useRef(1);
@@ -600,10 +603,11 @@ export default function AIChatbot() {
       setIsTyping(true);
       await new Promise((r) => setTimeout(r, 700 + Math.random() * 600));
       setIsTyping(false);
-      const response = getHaveliResponse(msg, lang);
-      addMessage("assistant", response, lang);
+      const responseLang: Lang = forcedLang ?? lang;
+      const response = getHaveliResponse(msg, responseLang);
+      addMessage("assistant", response, responseLang);
     },
-    [input, addMessage],
+    [input, addMessage, forcedLang],
   );
 
   // Voice input
@@ -622,7 +626,9 @@ export default function AIChatbot() {
       }
       const recognition = new SpeechRecognition();
       recognition.lang =
-        lastDetectedLang === "hindi" || lastDetectedLang === "hinglish"
+        forcedLang === "hindi" ||
+        (forcedLang === null &&
+          (lastDetectedLang === "hindi" || lastDetectedLang === "hinglish"))
           ? "hi-IN"
           : "en-IN";
       recognition.interimResults = false;
@@ -641,7 +647,7 @@ export default function AIChatbot() {
       recognitionRef.current?.stop();
       setIsRecording(false);
     }
-  }, [isRecording, lastDetectedLang, addMessage]);
+  }, [isRecording, lastDetectedLang, forcedLang, addMessage]);
 
   // Speaker button
   const handleSpeak = useCallback(
@@ -801,7 +807,42 @@ export default function AIChatbot() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2">
+                {/* Language Toggle */}
+                <div
+                  className="flex items-center rounded-full p-0.5 gap-0.5"
+                  style={{
+                    background: "oklch(0.15 0.04 240)",
+                    border: "1px solid oklch(0.3 0.05 240)",
+                  }}
+                >
+                  {(["auto", "english", "hindi"] as const).map((lang) => (
+                    <button
+                      key={lang}
+                      type="button"
+                      data-ocid="haveli.toggle"
+                      onClick={() =>
+                        setForcedLang(lang === "auto" ? null : lang)
+                      }
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-full transition-all"
+                      style={
+                        (lang === "auto" && forcedLang === null) ||
+                        forcedLang === lang
+                          ? {
+                              background: "oklch(0.78 0.19 85)",
+                              color: "oklch(0.1 0.02 240)",
+                            }
+                          : { color: "oklch(0.55 0.05 240)" }
+                      }
+                    >
+                      {lang === "auto"
+                        ? "AUTO"
+                        : lang === "english"
+                          ? "EN"
+                          : "हिं"}
+                    </button>
+                  ))}
+                </div>
                 <Button
                   variant="ghost"
                   size="icon"

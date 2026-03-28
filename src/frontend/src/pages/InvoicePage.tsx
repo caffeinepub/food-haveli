@@ -121,6 +121,16 @@ export default function InvoicePage({ onNavigate }: InvoicePageProps) {
             <p className="text-sm text-muted-foreground">
               Your order has been placed successfully!
             </p>
+            <div
+              className="flex items-center gap-1.5 mt-2 px-3 py-1.5 rounded-xl w-fit text-xs font-semibold"
+              style={{
+                background: "oklch(0.22 0.12 142 / 0.3)",
+                border: "1px solid oklch(0.55 0.18 142 / 0.4)",
+                color: "oklch(0.75 0.18 142)",
+              }}
+            >
+              <span>📱</span> Owner notified via WhatsApp
+            </div>
           </div>
           <div className="flex gap-2">
             <Button

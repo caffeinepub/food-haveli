@@ -314,6 +314,7 @@ export default function CustomerOrderPage({
   const handlePlaceOrder = () => {
     if (!name || !phone || !address) return;
     const invoiceNum = `FH-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const total = cartTotal + Math.round(cartTotal * 0.05) + 40;
     const orderData = {
       invoiceNumber: invoiceNum,
       date: new Date().toISOString(),
@@ -322,10 +323,18 @@ export default function CustomerOrderPage({
       subtotal: cartTotal,
       gst: Math.round(cartTotal * 0.05),
       deliveryFee: 40,
-      total: cartTotal + Math.round(cartTotal * 0.05) + 40,
+      total,
       payment,
     };
     localStorage.setItem("fh_order", JSON.stringify(orderData));
+    // WhatsApp alert to owner
+    const ownerPhone = "919876543210";
+    const itemLines = cart
+      .map((i) => `• ${i.name} x${i.qty} = ₹${i.price * i.qty}`)
+      .join("\n");
+    const orderMessage = `🍽️ NEW ORDER — Food Haveli\n\nOrder ID: #${invoiceNum}\nCustomer: ${name}\nPhone: ${phone}\nAddress: ${address}\n\nItems:\n${itemLines}\n\nTotal: ₹${total} (incl. GST)\nPayment: ${payment === "cod" ? "Cash on Delivery" : "Online Payment"}\n\nTime: ${new Date().toLocaleString("en-IN")}`;
+    const whatsappUrl = `https://wa.me/${ownerPhone}?text=${encodeURIComponent(orderMessage)}`;
+    window.open(whatsappUrl, "_blank");
     onNavigate("invoice" as Page);
   };
 
