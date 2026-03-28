@@ -4,15 +4,14 @@ import { toast } from "sonner";
 import AIChatbot from "./components/AIChatbot";
 import Navbar from "./components/Navbar";
 import VoiceCommand from "./components/VoiceCommand";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { CMSProvider } from "./context/CMSContext";
-import AdminPanel from "./pages/AdminPanel";
-import CMSPanel from "./pages/CMSPanel";
-import CustomerOrderPage from "./pages/CustomerOrderPage";
-import Dashboard from "./pages/Dashboard";
-import InvoicePage from "./pages/InvoicePage";
+import CustomerShell from "./pages/CustomerShell";
 import LandingPage from "./pages/LandingPage";
-import MenuPage from "./pages/MenuPage";
 import NearbyMap from "./pages/NearbyMap";
+import OwnerPanel from "./pages/OwnerPanel";
+import RestaurantPanel from "./pages/RestaurantPanel";
+import RoleLoginPage from "./pages/RoleLoginPage";
 
 export type Page =
   | "landing"
@@ -22,7 +21,8 @@ export type Page =
   | "map"
   | "order"
   | "invoice"
-  | "cms";
+  | "cms"
+  | "login";
 
 const TOAST_MESSAGES = [
   "🛔 New order received! Table 4 ordered Butter Chicken",
@@ -34,7 +34,8 @@ const TOAST_MESSAGES = [
   "📊 Daily revenue milestone: ₹10,000 reached!",
 ];
 
-export default function App() {
+function AppContent() {
+  const { role } = useAuth();
   const [currentPage, setCurrentPage] = useState<Page>("landing");
   const [isDark, setIsDark] = useState(true);
   const [voiceOpen, setVoiceOpen] = useState(false);
@@ -48,7 +49,6 @@ export default function App() {
     }
   }, [isDark]);
 
-  // Real-time toast notifications
   useEffect(() => {
     const scheduleNext = () => {
       const delay = Math.floor(Math.random() * (25000 - 15000 + 1)) + 15000;
@@ -74,41 +74,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Hide navbar on invoice page for clean print
-  const hideNavbar = currentPage === "invoice";
-
-  return (
-    <CMSProvider>
-      <div
-        className={`min-h-screen font-sans ${
-          isDark ? "bg-[oklch(0.11_0.012_245)]" : "bg-background"
-        }`}
-      >
-        {!hideNavbar && (
-          <Navbar
-            currentPage={currentPage}
-            onNavigate={navigate}
-            isDark={isDark}
-            onToggleDark={() => setIsDark(!isDark)}
-            onOpenCommand={() => {}}
-            onOpenVoice={() => setVoiceOpen(true)}
-          />
-        )}
-        <main>
-          {currentPage === "landing" && <LandingPage onNavigate={navigate} />}
-          {currentPage === "dashboard" && <Dashboard onNavigate={navigate} />}
-          {currentPage === "menu" && <MenuPage />}
-          {currentPage === "admin" && <AdminPanel />}
-          {currentPage === "map" && (
-            <NearbyMap onNavigate={(p) => navigate(p as Page)} />
-          )}
-          {currentPage === "order" && (
-            <CustomerOrderPage onNavigate={navigate} />
-          )}
-          {currentPage === "invoice" && <InvoicePage onNavigate={navigate} />}
-          {currentPage === "cms" && <CMSPanel />}
-        </main>
-        {currentPage !== "invoice" && <AIChatbot />}
+  // Role-based panels have their own full-screen UI
+  if (role === "owner") {
+    return (
+      <>
+        <OwnerPanel />
+        <AIChatbot />
         <VoiceCommand
           open={voiceOpen}
           onClose={() => setVoiceOpen(false)}
@@ -118,7 +89,105 @@ export default function App() {
           }}
         />
         <Toaster richColors position="top-right" />
-      </div>
+      </>
+    );
+  }
+
+  if (role === "restaurant") {
+    return (
+      <>
+        <RestaurantPanel />
+        <AIChatbot />
+        <VoiceCommand
+          open={voiceOpen}
+          onClose={() => setVoiceOpen(false)}
+          onCommand={(cmd) => {
+            toast.info(`Voice: ${cmd}`);
+            setVoiceOpen(false);
+          }}
+        />
+        <Toaster richColors position="top-right" />
+      </>
+    );
+  }
+
+  if (role === "customer") {
+    return (
+      <>
+        <CustomerShell />
+        <AIChatbot />
+        <VoiceCommand
+          open={voiceOpen}
+          onClose={() => setVoiceOpen(false)}
+          onCommand={(cmd) => {
+            toast.info(`Voice: ${cmd}`);
+            setVoiceOpen(false);
+          }}
+        />
+        <Toaster richColors position="top-right" />
+      </>
+    );
+  }
+
+  // No role — show landing page with option to login
+  if (
+    currentPage === "login" ||
+    currentPage === "cms" ||
+    currentPage === "admin"
+  ) {
+    return (
+      <>
+        <RoleLoginPage />
+        <Toaster richColors position="top-right" />
+      </>
+    );
+  }
+
+  // Default: landing + standard navbar
+  return (
+    <div
+      className={`min-h-screen font-sans ${
+        isDark ? "bg-[oklch(0.11_0.012_245)]" : "bg-background"
+      }`}
+    >
+      <Navbar
+        currentPage={currentPage}
+        onNavigate={navigate}
+        isDark={isDark}
+        onToggleDark={() => setIsDark(!isDark)}
+        onOpenCommand={() => {}}
+        onOpenVoice={() => setVoiceOpen(true)}
+      />
+      <main>
+        {currentPage === "landing" && <LandingPage onNavigate={navigate} />}
+        {currentPage === "map" && (
+          <NearbyMap onNavigate={(p) => navigate(p as Page)} />
+        )}
+        {/* Redirect to RoleLoginPage for protected pages */}
+        {["dashboard", "menu", "order", "invoice"].includes(currentPage) && (
+          <RoleLoginPage />
+        )}
+      </main>
+      <AIChatbot />
+      <VoiceCommand
+        open={voiceOpen}
+        onClose={() => setVoiceOpen(false)}
+        onCommand={(cmd) => {
+          toast.info(`Voice: ${cmd}`);
+          setVoiceOpen(false);
+        }}
+      />
+      <Toaster richColors position="top-right" />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <CMSProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </CMSProvider>
   );
 }

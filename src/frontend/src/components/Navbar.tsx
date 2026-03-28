@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useRef, useState } from "react";
 import type { Page } from "../App";
+import { useAuth } from "../context/AuthContext";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import NotificationBell from "./NotificationBell";
 
@@ -344,6 +345,7 @@ export default function Navbar({
   onToggleDark,
   onOpenVoice,
 }: NavbarProps) {
+  const { role, logout: roleLogout } = useAuth();
   const { login, clear, loginStatus, identity } = useInternetIdentity();
   const queryClient = useQueryClient();
   const isAuthenticated = !!identity;
@@ -682,6 +684,38 @@ export default function Navbar({
         <div className="flex items-center gap-1 shrink-0 flex-nowrap">
           <NotificationBell />
 
+          {role && (
+            <button
+              type="button"
+              onClick={() => {
+                roleLogout();
+              }}
+              className={
+                role === "owner"
+                  ? "flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 transition-colors"
+                  : role === "restaurant"
+                    ? "flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30 transition-colors"
+                    : "flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-500/20 text-green-300 border border-green-500/30 hover:bg-green-500/30 transition-colors"
+              }
+              title="Switch Role"
+              data-ocid="nav.role.button"
+            >
+              <span
+                className={
+                  role === "owner"
+                    ? "w-1.5 h-1.5 rounded-full bg-purple-400"
+                    : role === "restaurant"
+                      ? "w-1.5 h-1.5 rounded-full bg-amber-400"
+                      : "w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"
+                }
+              />
+              {role === "owner"
+                ? "Owner"
+                : role === "restaurant"
+                  ? "Manager"
+                  : "Customer"}
+            </button>
+          )}
           <button
             type="button"
             data-ocid="nav.toggle"
