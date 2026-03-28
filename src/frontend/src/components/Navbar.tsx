@@ -3,14 +3,12 @@ import { Input } from "@/components/ui/input";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Flame,
-  LayoutDashboard,
   LogIn,
   Map as MapIcon,
   Mic,
   Moon,
   Pencil,
   Search,
-  Settings,
   ShoppingBag,
   ShoppingCart,
   Sparkles,
@@ -213,28 +211,12 @@ const SEARCH_DATA = [
     desc: "Landing page",
   },
   {
-    label: "Dashboard",
-    type: "page",
-    category: "Navigation",
-    page: "dashboard" as Page,
-    emoji: "📊",
-    desc: "Analytics & insights",
-  },
-  {
     label: "Menu Management",
     type: "page",
     category: "Navigation",
     page: "menu" as Page,
     emoji: "📋",
     desc: "Manage your dishes",
-  },
-  {
-    label: "Admin Panel",
-    type: "page",
-    category: "Navigation",
-    page: "admin" as Page,
-    emoji: "⚙️",
-    desc: "Platform control center",
   },
   {
     label: "Find Nearby",
@@ -259,22 +241,6 @@ const SEARCH_DATA = [
     page: "menu" as Page,
     emoji: "✨",
     desc: "Generate menu with AI",
-  },
-  {
-    label: "Analytics & Reports",
-    type: "feature",
-    category: "Features",
-    page: "dashboard" as Page,
-    emoji: "📈",
-    desc: "Sales & performance data",
-  },
-  {
-    label: "Demand Prediction",
-    type: "feature",
-    category: "Features",
-    page: "dashboard" as Page,
-    emoji: "🔮",
-    desc: "AI demand forecasting",
   },
   {
     label: "QR Code Menu",
@@ -313,7 +279,7 @@ const SEARCH_DATA = [
 const TRENDING = [
   { label: "Butter Chicken", emoji: "🍗" },
   { label: "Biryani", emoji: "🍚" },
-  { label: "Dashboard", emoji: "📊" },
+  { label: "Order Now", emoji: "🛒" },
   { label: "AI Smart Menu", emoji: "✨" },
 ];
 
@@ -423,19 +389,9 @@ export default function Navbar({
       icon: <UtensilsCrossed className="w-3.5 h-3.5" />,
     },
     {
-      label: "Dashboard",
-      page: "dashboard",
-      icon: <LayoutDashboard className="w-3.5 h-3.5" />,
-    },
-    {
       label: "Menu",
       page: "menu",
       icon: <ShoppingCart className="w-3.5 h-3.5" />,
-    },
-    {
-      label: "Admin",
-      page: "admin",
-      icon: <Settings className="w-3.5 h-3.5" />,
     },
     { label: "Nearby", page: "map", icon: <MapIcon className="w-3.5 h-3.5" /> },
     { label: "CMS", page: "cms", icon: <Pencil className="w-3.5 h-3.5" /> },
