@@ -1307,8 +1307,10 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
                     borderColor: "oklch(0.76 0.19 75 / 0.4)",
                   }}
                 >
-                  "Passionate app designer crafting intuitive interfaces that
-                  turn data into actionable insights for restaurant owners."
+                  "I started Food Haveli because I saw small restaurant owners
+                  struggling to compete in a digital world. My goal is simple —
+                  give every local food business the tools they need to grow,
+                  without needing any technical knowledge."
                 </blockquote>
                 <div className="flex flex-wrap gap-2 mb-6">
                   {["App Design", "UI/UX", "Data Insights"].map((tag) => (
@@ -1329,6 +1331,7 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
               <div className="flex gap-3">
                 <button
                   type="button"
+                  onClick={() => window.open("https://linkedin.com", "_blank")}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105"
                   style={{
                     background: "oklch(0.76 0.19 75 / 0.1)",
@@ -1340,6 +1343,7 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
                 </button>
                 <button
                   type="button"
+                  onClick={() => window.open("https://twitter.com", "_blank")}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105"
                   style={{
                     background: "oklch(0.82 0.12 200 / 0.1)",
@@ -1397,9 +1401,10 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
                     borderColor: "oklch(0.6 0.22 280 / 0.4)",
                   }}
                 >
-                  "Full-stack web designer and ERP specialist building seamless
-                  digital experiences and enterprise systems for food
-                  businesses."
+                  "I believe every restaurant owner deserves a beautiful,
+                  professional website without having to hire anyone or spend a
+                  fortune. I make sure Food Haveli is easy to use, fast to set
+                  up, and works perfectly for every type of food business."
                 </blockquote>
                 <div className="flex flex-wrap gap-2 mb-6">
                   {["Web Design", "ERP Systems", "Business Automation"].map(
@@ -1422,6 +1427,7 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
               <div className="flex gap-3">
                 <button
                   type="button"
+                  onClick={() => window.open("https://linkedin.com", "_blank")}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105"
                   style={{
                     background: "oklch(0.6 0.22 280 / 0.1)",
@@ -1433,6 +1439,7 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
                 </button>
                 <button
                   type="button"
+                  onClick={() => window.open("https://twitter.com", "_blank")}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105"
                   style={{
                     background: "oklch(0.82 0.12 200 / 0.1)",
@@ -1490,8 +1497,10 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
                     borderColor: "oklch(0.82 0.12 200 / 0.4)",
                   }}
                 >
-                  "Automation expert streamlining restaurant operations so
-                  owners focus on food, not paperwork."
+                  "Running a restaurant is already hard work. I focus on making
+                  sure all the day-to-day tasks — taking orders, managing the
+                  menu, tracking sales — happen automatically, so owners can
+                  spend more time doing what they love: serving great food."
                 </blockquote>
                 <div className="flex flex-wrap gap-2 mb-6">
                   {["Process Automation", "Workflow Design", "Operations"].map(
@@ -1514,6 +1523,7 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
               <div className="flex gap-3">
                 <button
                   type="button"
+                  onClick={() => window.open("https://linkedin.com", "_blank")}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105"
                   style={{
                     background: "oklch(0.82 0.12 200 / 0.1)",
@@ -1525,6 +1535,7 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
                 </button>
                 <button
                   type="button"
+                  onClick={() => window.open("https://twitter.com", "_blank")}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105"
                   style={{
                     background: "oklch(0.76 0.19 75 / 0.1)",
