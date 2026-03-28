@@ -18,15 +18,21 @@ import {
   Home,
   LogOut,
   MessageSquare,
+  Moon,
   Settings,
   Shield,
+  Star,
+  Sun,
   TrendingUp,
   Users,
+  UtensilsCrossed,
 } from "lucide-react";
 import { motion } from "motion/react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "../context/AuthContext";
 import { useCMS } from "../context/CMSContext";
+import { useTheme } from "../context/ThemeContext";
 import AdminPanel from "./AdminPanel";
 
 const PLATFORM_STATS = [
@@ -152,7 +158,9 @@ const INQUIRIES = [
 
 export default function OwnerPanel() {
   const { logout } = useAuth();
-  const { vendors } = useCMS();
+  const { isDark, toggleTheme } = useTheme();
+  const { vendors, menuItems } = useCMS();
+  const [ownerMenuCat, setOwnerMenuCat] = useState("All");
 
   return (
     <div className="min-h-screen bg-[oklch(0.10_0.015_290)]">
@@ -184,6 +192,16 @@ export default function OwnerPanel() {
             <Badge className="bg-purple-600/30 text-purple-200 border-purple-400/30">
               Platform Owner
             </Badge>
+            {/* Theme Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleTheme}
+              className="text-purple-300 hover:text-purple-200 hover:bg-purple-500/10"
+              title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {isDark ? <Sun size={16} /> : <Moon size={16} />}
+            </Button>
             {/* Back to Home */}
             <Button
               variant="outline"
@@ -244,6 +262,12 @@ export default function OwnerPanel() {
               className="data-[state=active]:bg-purple-600 data-[state=active]:text-white text-purple-300"
             >
               <MessageSquare size={15} className="mr-1.5" /> Inquiries
+            </TabsTrigger>
+            <TabsTrigger
+              value="live-menu"
+              className="data-[state=active]:bg-purple-600 data-[state=active]:text-white text-purple-300"
+            >
+              <UtensilsCrossed size={15} className="mr-1.5" /> Live Menu
             </TabsTrigger>
             <TabsTrigger
               value="settings"
@@ -461,6 +485,137 @@ export default function OwnerPanel() {
                 ))}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* LIVE MENU */}
+          <TabsContent value="live-menu">
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <h3 className="text-white font-bold text-lg">
+                    Live Menu Overview
+                  </h3>
+                  <p className="text-purple-300/60 text-sm mt-0.5">
+                    All menu items across the platform — read-only management
+                    view
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg px-4 py-2 text-center">
+                    <p className="text-2xl font-bold text-purple-300">
+                      {menuItems.length}
+                    </p>
+                    <p className="text-purple-400/60 text-xs">Total Items</p>
+                  </div>
+                  <div className="bg-green-500/10 border border-green-500/20 rounded-lg px-4 py-2 text-center">
+                    <p className="text-2xl font-bold text-green-300">
+                      {menuItems.filter((m) => m.available).length}
+                    </p>
+                    <p className="text-green-400/60 text-xs">Available</p>
+                  </div>
+                  <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-2 text-center">
+                    <p className="text-2xl font-bold text-red-300">
+                      {menuItems.filter((m) => !m.available).length}
+                    </p>
+                    <p className="text-red-400/60 text-xs">Unavailable</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Category filter */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {["All", "Mains", "Breads", "Drinks", "Desserts", "Snacks"].map(
+                  (cat) => (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => setOwnerMenuCat(cat)}
+                      className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all border ${
+                        ownerMenuCat === cat
+                          ? "bg-purple-600 border-purple-600 text-white shadow-lg shadow-purple-500/20"
+                          : "bg-white/5 border-purple-500/20 text-purple-300/70 hover:text-purple-300 hover:border-purple-500/40"
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ),
+                )}
+              </div>
+
+              {/* Menu Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {menuItems
+                  .filter(
+                    (item) =>
+                      ownerMenuCat === "All" || item.category === ownerMenuCat,
+                  )
+                  .map((item, i) => (
+                    <motion.div
+                      key={item.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.04 }}
+                      className="rounded-2xl overflow-hidden bg-purple-500/5 border border-purple-500/15 hover:border-purple-500/40 hover:shadow-lg hover:shadow-purple-500/10 transition-all hover:-translate-y-1"
+                      data-ocid={`owner.menu.item.${i + 1}`}
+                    >
+                      <div className="relative h-44 overflow-hidden">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                        {item.popular && (
+                          <span className="absolute top-3 left-3 bg-purple-600 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                            🔥 Popular
+                          </span>
+                        )}
+                        <div className="absolute top-3 right-3">
+                          <span
+                            className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                              item.available
+                                ? "bg-green-500/90 text-white"
+                                : "bg-red-500/90 text-white"
+                            }`}
+                          >
+                            {item.available ? "✓ Available" : "✕ Off"}
+                          </span>
+                        </div>
+                        <div className="absolute bottom-3 left-3 flex items-center gap-1">
+                          <Star
+                            size={12}
+                            className="text-amber-400 fill-amber-400"
+                          />
+                          <span className="text-white text-xs font-medium">
+                            {item.rating}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <div className="flex items-start justify-between mb-1">
+                          <h3 className="text-white font-semibold text-sm leading-tight flex-1 mr-2">
+                            {item.name}
+                          </h3>
+                          <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30 text-xs shrink-0">
+                            {item.category}
+                          </Badge>
+                        </div>
+                        <p className="text-white/40 text-xs leading-relaxed mb-3 line-clamp-2">
+                          {item.desc}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-amber-400 font-bold text-lg">
+                            ₹{item.price}
+                          </span>
+                          <span className="text-purple-300/50 text-xs">
+                            ID #{item.id}
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+              </div>
+            </div>
           </TabsContent>
 
           {/* SETTINGS — wraps AdminPanel */}

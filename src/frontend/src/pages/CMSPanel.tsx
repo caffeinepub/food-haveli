@@ -714,10 +714,10 @@ function MenuManagerTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
         <div className="flex items-center gap-2 mb-1">
           <span className="text-xl">🤖</span>
           <div>
-            <h3 className="font-bold text-sm" style={{ color: "#1a1a1a" }}>
+            <h3 className="font-bold text-sm text-foreground">
               AI Menu Generator
             </h3>
-            <p className="text-xs" style={{ color: "#333333" }}>
+            <p className="text-xs text-muted-foreground">
               Describe your restaurant and AI will generate a full menu
               instantly
             </p>
@@ -767,10 +767,10 @@ function MenuManagerTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
           <div className="flex items-center gap-2">
             <span className="text-xl">📱</span>
             <div>
-              <h3 className="font-bold text-sm" style={{ color: "#1a1a1a" }}>
+              <h3 className="font-bold text-sm text-foreground">
                 Restaurant QR Code
               </h3>
-              <p className="text-xs" style={{ color: "#333333" }}>
+              <p className="text-xs text-muted-foreground">
                 Scan to open your menu instantly — no app needed
               </p>
             </div>
@@ -795,10 +795,10 @@ function MenuManagerTab({ cms }: { cms: ReturnType<typeof useCMS> }) {
               />
             </div>
             <div className="space-y-2 text-center sm:text-left">
-              <p className="text-sm font-semibold" style={{ color: "#1a1a1a" }}>
+              <p className="text-sm font-semibold text-foreground">
                 Your Menu QR Code
               </p>
-              <p className="text-xs" style={{ color: "#333333" }}>
+              <p className="text-xs text-muted-foreground">
                 Print this and place it on tables, counter, or packaging
               </p>
               <a

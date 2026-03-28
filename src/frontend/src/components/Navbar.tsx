@@ -388,11 +388,6 @@ export default function Navbar({
       page: "landing",
       icon: <UtensilsCrossed className="w-3.5 h-3.5" />,
     },
-    {
-      label: "Menu",
-      page: "menu",
-      icon: <ShoppingCart className="w-3.5 h-3.5" />,
-    },
     { label: "Nearby", page: "map", icon: <MapIcon className="w-3.5 h-3.5" /> },
     { label: "CMS", page: "cms", icon: <Pencil className="w-3.5 h-3.5" /> },
   ];

@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import VoiceCommand from "./components/VoiceCommand";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { CMSProvider } from "./context/CMSContext";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import CustomerShell from "./pages/CustomerShell";
 import LandingPage from "./pages/LandingPage";
 import NearbyMap from "./pages/NearbyMap";
@@ -36,18 +37,10 @@ const TOAST_MESSAGES = [
 
 function AppContent() {
   const { role } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const [currentPage, setCurrentPage] = useState<Page>("landing");
-  const [isDark, setIsDark] = useState(true);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [toastIndex, setToastIndex] = useState(0);
-
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDark]);
 
   useEffect(() => {
     const scheduleNext = () => {
@@ -154,7 +147,7 @@ function AppContent() {
         currentPage={currentPage}
         onNavigate={navigate}
         isDark={isDark}
-        onToggleDark={() => setIsDark(!isDark)}
+        onToggleDark={toggleTheme}
         onOpenCommand={() => {}}
         onOpenVoice={() => setVoiceOpen(true)}
       />
@@ -164,7 +157,7 @@ function AppContent() {
           <NearbyMap onNavigate={(p) => navigate(p as Page)} />
         )}
         {/* Redirect to RoleLoginPage for protected pages */}
-        {["dashboard", "menu", "order", "invoice"].includes(currentPage) && (
+        {["dashboard", "order", "invoice"].includes(currentPage) && (
           <RoleLoginPage />
         )}
       </main>
@@ -184,10 +177,12 @@ function AppContent() {
 
 export default function App() {
   return (
-    <CMSProvider>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </CMSProvider>
+    <ThemeProvider>
+      <CMSProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </CMSProvider>
+    </ThemeProvider>
   );
 }
